@@ -11,6 +11,8 @@ from tqdm import tqdm
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), './subroutines')))
 
+from subroutines.loader import parse_coord_file, load_comm_mat
+
 # configure this one
 from config import * 
 
@@ -20,7 +22,6 @@ from mapping import *
 from routing import *
 from my_utils import *
 from hop_bytes import *
-from my_io import *
 from analyze_nodes import analyze_3D_nodes, remove_duplicates_preserve_order
 import T6Dcoord2ID
 
@@ -74,7 +75,7 @@ out_filename = os.path.basename(coord_filename)+"_"+md5
 os.makedirs(tmp_dir, exist_ok=True)
 
 # these lists of coordinnates are sorted by ranks
-phys_nodes_3D, phys_nodes_6D, log_nodes_3D = parse_coord_file(coord_filename)
+phys_nodes_coord_3D, phys_nodes_coord_6D, logical_nodes_coord_3D, logical_nodes_shape, physical_node_shape, logical_coord_dim, physical_coord_dim = parse_coord_file(coord_filename) 
 
 analyze_3D_nodes(phys_nodes_3D, "physical")
 analyze_3D_nodes(log_nodes_3D, "logical")
@@ -88,17 +89,17 @@ if args.v :
 if args.m:
     print("\n####### Computing Hop-Bytes in the 6D Torus")
     mat = load_comm_mat(args.m)
-    hop_matrix = hop_matrix_from_coords(grid_shape, phys_nodes_6D) 
+    hop_matrix = hop_matrix_from_coords(grid_shape, phys_nodes_coord_6D) 
     hop_bytes = mat * hop_matrix
     print(f"No Mappping Hop-Bytes = {hop_bytes.sum()}")
 
     # Convert to NumPy array
-    phys_nodes_6D = np.array(phys_nodes_6D)
+    phys_nodes_coord_6D = np.array(phys_nodes_coord_6D)
 
     # Get unique rows without sorting
     # Extract 6D coordinates that are unique but keep the order of the original coordinates (s they are sorted by ranks
-    _, indices = np.unique(phys_nodes_6D, axis=0, return_index=True)
-    phys_unique_6D = phys_nodes_6D[np.sort(indices)]
+    _, indices = np.unique(phys_nodes_coord_6D, axis=0, return_index=True)
+    phys_unique_6D = phys_nodes_coord_6D[np.sort(indices)]
 
     hop_matrix_unique = hop_matrix_from_coords(grid_shape, phys_unique_6D)
     sigma = np.repeat(np.arange(len(phys_unique_6D)), len(mat)//len(phys_unique_6D) )
@@ -108,7 +109,7 @@ if args.m:
 
     phys_ids=[];
     # convert 6D coordinate into node id
-    for node in phys_nodes_6D:
+    for node in phys_nodes_coord_6D:
         phys_ids.append(str(T6Dcoord2ID.coord_2_id(node[0], node[1], node[2], node[3] , node[4], node[5])))
     sigma_tm_sub_fugaku = topomatch_sub_fugaku(out_filename, args.m, mat, phys_ids, len(mat), hop_matrix_unique)
     sigma_tm_phys, sigma_scotch = topomatch_phys_grid(out_filename, args.m, mat, phys_ids, hop_matrix, len(mat), hop_matrix_unique)
