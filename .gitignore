@@ -204,3 +204,18 @@ wandb/
 
 # tgt files
 *.tgt
+
+# grf files
+*.grf
+
+# html files
+*.html
+
+# TAGS
+TAGS
+
+# tmp files
+tmp/
+
+# data files
+data/
