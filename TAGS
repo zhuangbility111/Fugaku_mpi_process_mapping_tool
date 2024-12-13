@@ -1,0 +1,69 @@
+
+subroutines/hop_bytes.py,178
+import numpy as npnp1,0
+def hop_matrix_from_coords(torus_shape, phys_nodes):hop_matrix_from_coords3,20
+def compute_hop_bytes(mat, sigma, h, h_full):compute_hop_bytes28,924
+
+subroutines/my_io.py,199
+import numpy as npnp1,0
+def load_comm_mat(filename):load_comm_mat3,20
+def extract_variables(input_string):extract_variables16,333
+def parse_coord_file(coord_filename):parse_coord_file46,1467
+
+subroutines/T6Dcoord2ID.py,183
+def coord_2_id(x,y,z,a,b,c):coord_2_id4,52
+    def check_bounds(x, y, z, a, b, c):check_bounds5,81
+    def coord_to_id(x,y,z,a,b,c):coord_to_id26,820
+def check():check35,1008
+
+subroutines/config.py,0
+
+subroutines/config_template.py,0
+
+subroutines/my_utils.py,45
+def compute_md5(file_path):compute_md54,17
+
+subroutines/routing.py,561
+import numpy as npnp1,0
+def preprocess_coords(coords_3D):preprocess_coords7,87
+def build_path_lookup_table(coords_3D, shape_3D):build_path_lookup_table18,442
+def torus_dor_path_with_cache(start, end, dimensions, cache):torus_dor_path_with_cache38,1137
+def save_links(sorted_links, save_filename):save_links83,2784
+def load_links(save_filename):load_links95,3155
+def compute_link_usage_with_lookup(shape_3D, coords_3D, com_mat, save_file):compute_link_usage_with_lookup111,3701
+def anaylse_link_usage(link_usage, name):anaylse_link_usage161,5491
+
+subroutines/topology_draw.py,384
+import plotly.graph_objects as gogo1,0
+import matplotlib.pyplot as pltplt2,34
+import numpy as npnp3,66
+def display_3d_torus_with_selected_nodes(grid_shape, selected_nodes, link_usage = None, name = "display_3d_torus_with_selected_nodes7,162
+def plot_link_usage(shape_3D, coords_3D, link_usage, save_to_html=None):plot_link_usage179,6300
+def plot_mat(mat):plot_mat248,8749
+
+subroutines/analyze_nodes.py,646
+import numpy as npnp2,35
+def group_matrix(mat, groups):group_matrix6,88
+def check_groups_identical(array, group_size):check_groups_identical33,1028
+def count_oversubscribing_X_Y_Z(nodes):count_oversubscribing_X_Y_Z41,1307
+def is_compact_X_Y_Z(nodes):is_compact_X_Y_Z75,2469
+def check_coordinate_order(coordinates):check_coordinate_order109,3712
+def is_ordered(coordinates, order):is_ordered127,4360
+def remove_duplicates_preserve_order(nodes):remove_duplicates_preserve_order141,4928
+def remove_consecutive_duplicates(nodes):remove_consecutive_duplicates161,5466
+def analyze_3D_nodes(nodes, type_str):analyze_3D_nodes184,6034
+
+subroutines/mapping.py,640
+import numpy as npnp2,10
+def permute_mat(mat, sigma):permute_mat9,125
+def topomatch_phys_grid(out_filename, file_mat, mat, ids, hop_matrix, nb_procs, hop_matrix_uniqutopomatch_phys_grid33,725
+def parse_topomach_mapping(res_file, ids, logical_numbering = False):parse_topomach_mapping122,4662
+def topomatch_sub_fugaku(out_filename, file_mat, mat, ids, nb_procs, hop_matrix_unique):topomatch_sub_fugaku138,5216
+def com_mat_to_grf(mat, com_mat_grf, sparse_quantile= 0):com_mat_to_grf180,6649
+def analyze_scotch_mapping(res_file):analyze_scotch_mapping215,7786
+def refine_solution(mat, ids, res_file, h):refine_solution238,8438
+
+analyze_coords.py,102
+import numpy as npnp7,102
+import numpy as npnp8,121
+def parse_arguments():parse_arguments29,624
