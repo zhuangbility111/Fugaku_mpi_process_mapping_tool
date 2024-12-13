@@ -169,4 +169,23 @@ def anaylse_link_usage(link_usage, name):
     print(f"\tmedian:\t{values[m_index]:.2e}")
     print(f"\tmean:\t{np.mean(values):.2e}")
     print(f"\tmin:\t{values[0]:.2e}")
-    print(f"\tsum:\t{np.sum(values):.2e}")
+    sum_values = np.sum(values)
+    print(f"\tsum:\t{sum_values:.2e}")
+
+    sum_by_dim = [0,0,0]
+    links_by_dim = [0,0,0]
+    nb_links = 0
+    for link, value in link_usage:
+        differing_indices = [i for i, (a, b) in enumerate(zip(link[0], link[1])) if a != b]
+        if len(differing_indices) != 1:
+            print(f"Error link \"{link}\" is using more than one dimentsion at a time...")
+            quit()
+        sum_by_dim[differing_indices[0]] += value
+        links_by_dim[differing_indices[0]] += 1
+        nb_links += 1
+
+
+    print("\tSum by dimension:")
+    print(f"\t\tX: {sum_by_dim[0]:.2e} ({100*sum_by_dim[0]/sum_values:2.2f}%)\t{links_by_dim[0]} ({100*links_by_dim[0]/nb_links:2.2f}%)")
+    print(f"\t\tY: {sum_by_dim[1]:.2e} ({100*sum_by_dim[1]/sum_values:2.2f}%)\t{links_by_dim[1]} ({100*links_by_dim[1]/nb_links:2.2f}%)")
+    print(f"\t\tZ: {sum_by_dim[2]:.2e} ({100*sum_by_dim[2]/sum_values:2.2f}%)\t{links_by_dim[2]} ({100*links_by_dim[2]/nb_links:2.2f}%)")

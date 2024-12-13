@@ -127,7 +127,7 @@ if args.m:
     anaylse_link_usage(link_usage_scotch, coord_filename + " Scotch")
     if args.v:
         display_3d_torus_with_selected_nodes(grid_shape[0:3], phys_unique_3D, link_usage, name= coord_filename + " RR", quantile = 0)
-        display_3d_torus_with_selected_nodes(grid_shape[0:3], phys_unique_3D, link_usage_tm_sub_fugaku, name=coord_filename + " TM Sub Fugaku",quantile = 0.33)
-        display_3d_torus_with_selected_nodes(grid_shape[0:3], phys_unique_3D, link_usage_tm_phys, name= coord_filename + " TM Phys",quantile = 0.33)
-        display_3d_torus_with_selected_nodes(grid_shape[0:3], phys_unique_3D, link_usage_scotch, name= coord_filename + " Scotch",quantile = 0.33)
+        display_3d_torus_with_selected_nodes(grid_shape[0:3], phys_unique_3D, link_usage_tm_sub_fugaku, name=coord_filename + " TM Sub Fugaku",quantile = 0)
+        display_3d_torus_with_selected_nodes(grid_shape[0:3], phys_unique_3D, link_usage_tm_phys, name= coord_filename + " TM Phys",quantile = 0)
+        display_3d_torus_with_selected_nodes(grid_shape[0:3], phys_unique_3D, link_usage_scotch, name= coord_filename + " Scotch",quantile = 0)
         
