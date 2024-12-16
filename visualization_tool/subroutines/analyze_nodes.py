@@ -165,7 +165,6 @@ def remove_consecutive_duplicates(nodes):
     :param nodes: List of tuples representing nodes.
     :return: List of unique nodes in original order.
     """
-    seen = set()
     res_nodes = []
     cur_node = None
     # Convert array to tuple for hashability
@@ -181,36 +180,36 @@ def remove_consecutive_duplicates(nodes):
     return res_nodes
 
 
-def analyze_3D_nodes(nodes, type_str):
+def analyze_3D_nodes(nodes_coords, type: str):
 
-    print(f"\n####### Analyzing {type_str} topology")
-    cons_nodes = remove_consecutive_duplicates(nodes)
-    no_dup_nodes = remove_duplicates_preserve_order(nodes)
+    print(f"\n####### Analyzing {type} topology")
+    cons_nodes = remove_consecutive_duplicates(nodes_coords)
+    no_dup_nodes = remove_duplicates_preserve_order(nodes_coords)
 
     result = check_coordinate_order(cons_nodes)
 
     if result:
-        print(f"The {type_str} X, Y, Z oordinates follow the order: {' → '.join(result)}")
+        print(f"The {type} X, Y, Z oordinates follow the order: {' → '.join(result)}")
     else:
         print("The coordinates do not follow any valid order.")
         result = check_coordinate_order(no_dup_nodes)
         if result:
-            print(f"However, the non-duplicated {type_str} X, Y, Z coordinates follow the order: {' → '.join(result)}")
+            print(f"However, the non-duplicated {type} X, Y, Z coordinates follow the order: {' → '.join(result)}")
 
         else:
-            print(f"Even the non-duplicated {type_str} X, Y, Z coordinates do not follow any valid order.")
+            print(f"Even the non-duplicated {type} X, Y, Z coordinates do not follow any valid order.")
 
     
 
     is_compact, dim_x, dim_y, dim_z = is_compact_X_Y_Z(no_dup_nodes)
     if is_compact : 
-        print(f"Embedded in a compact {type_str} 3D grid of dimension: {dim_x}x{dim_y}x{dim_z} of size {dim_x * dim_y * dim_z}")
+        print(f"Embedded in a compact {type} 3D grid of dimension: {dim_x}x{dim_y}x{dim_z} of size {dim_x * dim_y * dim_z}")
 
     else:
         print("Not embedded in a compact 3D grid")
 
 
-    min_oversub, max_oversub = count_oversubscribing_X_Y_Z(nodes);
+    min_oversub, max_oversub = count_oversubscribing_X_Y_Z(nodes_coords);
     if min_oversub == max_oversub :
         print(f"Constant oversubscribing factor in X, Y, Z of {max_oversub}")
     else:
