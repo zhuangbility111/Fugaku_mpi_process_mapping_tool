@@ -1,12 +1,12 @@
 import os
 import numpy as np
 import math 
-from config import *
+from config_template import *
 from hop_bytes import *
 from collections import defaultdict
 
 
-def permute_mat(mat, sigma):
+def permute_comm_mat(mat, sigma):
     """
     Apply the sigma mepping to the matrix
     with 
