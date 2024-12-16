@@ -148,4 +148,4 @@ def parse_coord_file(coord_filename, mode="group") -> tuple[np.ndarray, np.ndarr
     physical_node_shape = np.array([24, 23, 24, 2, 3, 2], dtype=np.int32)
     logical_nodes_shape = np.array([logical_nodes_coord_3D[:, 0].max() + 1, logical_nodes_coord_3D[:, 1].max() + 1, logical_nodes_coord_3D[:, 2].max() + 1], dtype=np.int32)
 
-    return phys_nodes_coord_3D, phys_nodes_coord_6D, logical_nodes_coord_3D, logical_nodes_shape, physical_node_shape, logical_coord_dim, physical_coord_dim
+    return phys_nodes_coord_3D.tolist(), phys_nodes_coord_6D.tolist(), logical_nodes_coord_3D.tolist(), logical_nodes_shape.tolist(), physical_node_shape.tolist(), logical_coord_dim, physical_coord_dim
