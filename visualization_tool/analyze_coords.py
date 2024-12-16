@@ -18,6 +18,7 @@ from subroutines.analyze_nodes import analyze_3D_nodes, remove_duplicates_preser
 from subroutines.hop_bytes import get_hop_matrix_from_coords_numpy
 from subroutines.mapping import do_process_mapping_for_diff_mapping
 from subroutines.routing import compute_link_usage_for_diff_mapping
+from subroutines.process_mapping_enum import ProcessMappingMethod
 
 from subroutines.config_template import *
 
@@ -126,7 +127,7 @@ if __name__ == "__main__":
         phys_nodes_coord_6D = np.array(phys_nodes_coord_6D)
 
         # Do process mapping according to the selected methods
-        comm_mat_for_diff_mapping = do_process_mapping_for_diff_mapping(comm_mat, physical_node_shape, phys_nodes_coord_6D, hop_matrix, , process_mapping_methods, out_filename, comm_filename)
+        comm_mat_for_diff_mapping = do_process_mapping_for_diff_mapping(comm_mat, physical_node_shape, phys_nodes_coord_6D, hop_matrix, process_mapping_methods, out_filename, comm_filename)
 
         # Compute link usage
         link_usage_for_diff_mapping = compute_link_usage_for_diff_mapping(physical_node_shape[0:3], phys_nodes_coord_3D, comm_mat_for_diff_mapping, process_mapping_methods, out_filename, comm_filename)

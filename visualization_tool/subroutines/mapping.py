@@ -5,6 +5,7 @@ from config_template import *
 from hop_bytes import *
 from collections import defaultdict
 from T6Dcoord2ID import coord_2_id
+from process_mapping_enum import ProcessMappingMethod
 
 
 
