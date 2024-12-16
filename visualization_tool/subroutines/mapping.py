@@ -4,6 +4,8 @@ import math
 from config_template import *
 from hop_bytes import *
 from collections import defaultdict
+from T6Dcoord2ID import coord_2_id
+
 
 
 def permute_comm_mat(mat, sigma):
@@ -253,3 +255,63 @@ def refine_solution(mat, ids, res_file, h):
         print(f"Processor {proc_id} ({n}): Ranks {ranks}")
         if n > max_oversub:
             max_oversub = n
+
+def do_process_mapping_for_diff_mapping(comm_mat: np.ndarray, physical_node_shape: list, phys_nodes_coord_6D: np.ndarray, hop_matrix: np.ndarray, process_mapping_methods: list, out_filename: str, comm_filename: str) -> dict:
+    """
+    Perform process mapping using the specified methods.
+
+    Parameters:
+        comm_mat (numpy.ndarray): Communication pattern matrix.
+        physical_node_shape (list): Shape of the physical node (e.g., 3D torus dimensions).
+        phys_nodes_coord_6D (list of tuples): 6D coordinates of the physical nodes.
+        hop_matrix (numpy.ndarray): Hop matrix (distance matrix).
+        process_mapping_methods (list of ProcessMappingMethod): List of process mapping methods to use.
+            Options:
+                - ProcessMappingMethod.TM_SUB_FUGAKU
+                - ProcessMappingMethod.TM_PHYS
+                - ProcessMappingMethod.SCOTCH
+        out_filename (str): Output filename to store results.
+        comm_filename (str): Communication pattern filename for input.
+            
+    Returns:
+        dict: A dictionary containing the communication matrix for each process mapping method.
+              Keys are the method names, and values are the resulting communication matrices.
+    """
+    # Get unique rows without sorting
+    # Extract 6D coordinates that are unique but keep the order of the original coordinates (s they are sorted by ranks
+    # The reason for getting the unique coordinates is that 4 process may have the same coordinates (4 MPI processes per node)
+    _, indices = np.unique(phys_nodes_coord_6D, axis=0, return_index=True)
+    unique_phys_nodes_coord_6D = phys_nodes_coord_6D[np.sort(indices)]
+
+    hop_matrix_unique = get_hop_matrix_from_coords_numpy(physical_node_shape, unique_phys_nodes_coord_6D)
+    # sigma = np.repeat(np.arange(len(phys_unique_6D)), len(mat)//len(phys_unique_6D))
+    # if compute_hop_bytes(mat, sigma, hop_matrix_unique, hop_matrix) != hop_bytes.sum():
+    #     print("compute_hop_bytes() failed to find the correct value.\n")
+    #     quit()
+
+    phys_nodes_ids=[]
+    # convert 6D coordinate into node id
+    for node in phys_nodes_coord_6D:
+        phys_nodes_ids.append(str(coord_2_id(node[0], node[1], node[2], node[3] , node[4], node[5])))
+
+    comm_mat_dict = {}
+
+    if ProcessMappingMethod.RR in process_mapping_methods:
+        comm_mat_dict[ProcessMappingMethod.RR] = comm_mat
+
+    if ProcessMappingMethod.TM_SUB_FUGAKU in process_mapping_methods:
+        sigma_tm_sub_fugaku = topomatch_sub_fugaku(out_filename, comm_filename, comm_mat, phys_nodes_ids, len(comm_mat), hop_matrix_unique)
+        mat_tm_sub_fugaku = permute_comm_mat(comm_mat, sigma_tm_sub_fugaku)
+        comm_mat_dict[ProcessMappingMethod.TM_SUB_FUGAKU] = mat_tm_sub_fugaku
+    
+    if ProcessMappingMethod.TM_PHYS in process_mapping_methods:
+        sigma_tm_phys, _ = topomatch_phys_grid(out_filename, comm_filename, comm_mat, phys_nodes_ids, hop_matrix, len(comm_mat), hop_matrix_unique)
+        mat_tm_phys = permute_comm_mat(comm_mat, sigma_tm_phys)
+        comm_mat_dict[ProcessMappingMethod.TM_PHYS] = mat_tm_phys
+
+    if ProcessMappingMethod.SCOTCH in process_mapping_methods:
+        _, sigma_scotch = topomatch_phys_grid(out_filename, comm_filename, comm_mat, phys_nodes_ids, hop_matrix, len(comm_mat), hop_matrix_unique)
+        mat_scotch = permute_comm_mat(comm_mat, sigma_scotch)
+        comm_mat_dict[ProcessMappingMethod.SCOTCH] = mat_scotch
+
+    return comm_mat_dict

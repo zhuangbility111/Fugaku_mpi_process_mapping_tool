@@ -11,4 +11,10 @@ amk_grf = bin_path+"/amk_grf"
 gmap = bin_path+"/gmap"
 mapping = bin_path+"/mapping"
 
+from enum import Enum
 
+class ProcessMappingMethod(Enum):
+    RR = "RR"
+    TM_SUB_FUGAKU = "TM_Sub_Fugaku"
+    TM_PHYS = "TM_Phys"
+    SCOTCH = "Scotch"

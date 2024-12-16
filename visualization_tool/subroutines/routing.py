@@ -1,6 +1,6 @@
 import numpy as np
 from tqdm import tqdm
-from config import *
+from config_template import *
 import pickle
 import os
 
@@ -132,7 +132,7 @@ def compute_link_usage_with_lookup(shape_3D, coords_3D, com_mat, save_file):
     # Step 1: Preprocess coordinates and build the lookup table
     # the lookup table will contains all the path between any pair of nodes in coord_3D using the DIR X->Y->Z rounting algorithm 
     lookup_table = build_path_lookup_table(preprocess_coords(coords_3D), shape_3D)
-          
+
     link_dict = {}
 
     # Use the lookup table to calculate link usage
@@ -156,11 +156,14 @@ def compute_link_usage_with_lookup(shape_3D, coords_3D, com_mat, save_file):
     save_links(sorted_links, save_filename)
     
     return sorted_links
-        
 
 def anaylse_link_usage(link_usage, name):
     """
     Print statistics on link usage
+
+    Parameters:
+    link_usage: list of tuples (link, usage)
+    name: name of the method used to compute the link usage 
     """
     values = np.array(sorted([v for _, v in link_usage]))
     print(f"==== link usage stats for {name}")
@@ -170,3 +173,27 @@ def anaylse_link_usage(link_usage, name):
     print(f"\tmean:\t{np.mean(values):.2e}")
     print(f"\tmin:\t{values[0]:.2e}")
     print(f"\tsum:\t{np.sum(values):.2e}")
+
+
+def compute_link_usage_for_diff_mapping(physical_node_shape, phys_nodes_coord_3D, comm_mat_for_diff_mapping: dict, process_mapping_methods: list, out_filename: str, coord_filename: str) -> dict:
+    """
+    Compute link usage for different process mapping methods.
+
+    Parameters:
+    physical_node_shape: shape of the physical node (dim_x, dim_y, dim_z)
+    phys_nodes_coord_3D: list of 3D coordinates of the physical nodes
+    comm_mat_for_diff_mapping: dictionary containing the communication matrix for different mapping methods
+    out_filename: output filename
+    process_mapping_methods: list of selected process mapping methods
+
+    Returns:
+    link_usage_for_diff_mapping: dictionary containing the link usage for different mapping methods
+    """
+
+    link_usage_for_diff_mapping = {}
+
+    for mapping_method in process_mapping_methods:
+        comm_mat = comm_mat_for_diff_mapping[mapping_method]
+        link_usage = compute_link_usage_with_lookup(physical_node_shape, phys_nodes_coord_3D, comm_mat, out_filename+"_"+mapping_method)
+        anaylse_link_usage(link_usage, coord_filename + " " + mapping_method)
+        link_usage_for_diff_mapping[mapping_method] = link_usage
